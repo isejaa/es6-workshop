@@ -5,8 +5,8 @@ test(`should resolve`, () => {
   return pickApple('ripe')
     .then(result => {
       // throw new Error('this should not run')
-      // expect(result).toBe(/*ENTER GUESS HERE*/)
-      throw new Error('assert or throw here')
+      expect(result).toBe('ripe apple')
+      // throw new Error('assert or throw here')
     }, error => {
       // throw new Error('this should not run')
       // expect(error).toBe(/*ENTER GUESS HERE*/)
@@ -27,8 +27,8 @@ test(`should reject`, () => {
       throw new Error('assert or throw here')
     }, error => {
       // throw new Error('this should not run')
-      // expect(error).toBe(/*ENTER GUESS HERE*/)
-      throw new Error('assert or throw here')
+      expect(error).toBe('unripe apple')
+      // throw new Error('assert or throw here')
     })
     .catch(error => {
       // throw new Error('this should not run')
@@ -46,8 +46,8 @@ test(`errors can be caught`, () => {
     })
     .catch(error => {
       // throw new Error('this should not run')
-      // expect(error).toBe(/*ENTER GUESS HERE*/)
-      throw new Error('assert or throw here')
+      expect(error.message).toBe('out of apples')
+      //throw new Error('assert or throw here')
     })
 })
 
@@ -73,7 +73,7 @@ function pickApple(ripeness) {
 http://ws.kcd.im/?ws=ES6+and+Beyond&e=Promises&em=
 */
 test('I submitted my elaboration and feedback', () => {
-  const submitted = false // change this when you've submitted!
+  const submitted = true // change this when you've submitted!
   expect(true).toBe(submitted)
 })
 ////////////////////////////////
