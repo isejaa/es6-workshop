@@ -1,13 +1,15 @@
 test('String.prototype.padStart saves us from left-pad-gate', () => {
   const originalString = 'Worlds Finest'
   // call padStart on this string to make the test pass
-  const result = originalString
+  const result = originalString.padStart(17);
+  console.log(result)
   expect(result).toBe('    Worlds Finest')
 })
 
 test('String.prototype.padEnd (and padStart) can be given a string to pad with', () => {
   const originalString = 'Stronger Together'
   // call padEnd on this string to make the test pass
+  const result = originalString.padEnd(27, '-123')
   expect(result).toBe('Stronger Together-123-123-1')
 })
 
@@ -26,6 +28,7 @@ test('Object.values gets just the values of an object', () => {
     ],
   }
   // get the values of the show object as an array
+  const result = Object.values(show);
   expect(result).toEqual([
     'Supergirl',
     1.2,
@@ -55,6 +58,8 @@ test('Object.entries gives an array of arrays as [key, value]', () => {
       'Joe West',
     ],
   }
+
+  const result = Object.entries(show);
   // get a [key, value] array of the show object
   expect(result).toEqual([
     [ 'title', 'The Flash' ],
@@ -92,7 +97,7 @@ test('Trailing commas in function parameter lists and calls help us with git', (
     function bar(
       a,
       b,
-      ...rest,
+      ...rest
     ) {
       log(a, b, ...rest)
     }
@@ -112,7 +117,7 @@ test('Trailing commas in function parameter lists and calls help us with git', (
 http://ws.kcd.im/?ws=ES6+and+Beyond&e=ES2017&em=
 */
 test('I submitted my elaboration and feedback', () => {
-  const submitted = false // change this when you've submitted!
+  const submitted = true // change this when you've submitted!
   expect(true).toBe(submitted)
 })
 ////////////////////////////////
