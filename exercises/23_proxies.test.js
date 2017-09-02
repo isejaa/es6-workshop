@@ -20,7 +20,7 @@ function getCharacter() {
 
 test('can wrap an existing object', () => {
   const character = getCharacter()
-  const proxy = character
+  const proxy = new Proxy(character, {})
   expect(proxy).not.toBe(character) // referential equality
   expect(proxy).toEqual(character) // deep equality
 })
@@ -28,7 +28,41 @@ test('can wrap an existing object', () => {
 test('handler can intercept gets, sets, and deletes', () => {
   const character = getCharacter()
 
-  const handler = {}
+  const handler = {
+    get: function(target, prop) {
+      var keys = typeof prop === "string" ? prop.split('.'): [prop];
+
+      for(let key of keys) {
+        if (!target.hasOwnProperty(key)) {
+         return undefined;
+        }
+
+        target = target[key];
+      }
+
+      return target;
+    },
+    set: function(target, prop, value, receiver) {
+      var keys = prop.split('.');
+
+      for(let key of keys.slice(0, keys.length - 1)) {
+        if (!target.hasOwnProperty(key)) {
+          Reflect.defineProperty(target, key, {});
+        }
+
+        target = target[key];
+      }
+      target[keys.pop()] = value;
+      return true;
+    },
+    deleteProperty: function(target, prop) {
+      if (prop !== '_id') {
+        return Reflect.deleteProperty(target, prop);
+      }
+
+      return true;
+    },
+  }
   const proxy = new Proxy(character, handler)
 
   // interact with the proxy
@@ -48,10 +82,14 @@ test('handler can intercept gets, sets, and deletes', () => {
 
 //////// EXTRA CREDIT ////////
 
-test.skip('can intercept function calls', () => {
+test('can intercept function calls', () => {
   const character = getCharacter()
 
-  const handler = {}
+  const handler = {
+    apply: function(target, thisArgs, argumentList) {
+      return argumentList.length? argumentList[0] : target.call(thisArgs);
+    }
+  }
   // notice that `apply` only works for proxies on functions!
   character.greet = new Proxy(character.greet, handler)
   character.getTeachers = new Proxy(character.getTeachers, handler)
@@ -61,7 +99,7 @@ test.skip('can intercept function calls', () => {
   expect(character.getTeachers()).toEqual(['Sybill Trelawney', 'Dolores Umbridge'])
 })
 
-test.skip('can be used to do some fancy stuff with arrays', () => {
+test('can be used to do some fancy stuff with arrays', () => {
   const characters = [
     'Harry Potter',
     'Ron Weasly',
@@ -72,7 +110,11 @@ test.skip('can be used to do some fancy stuff with arrays', () => {
     'Pigwidgeon',
   ]
 
-  const handler = {}
+  const handler = {
+    get: function(target, prop) {
+      return prop >= 0 ? target[prop]:target[target.length + parseInt(prop, 10)];
+    }
+  }
   const proxy = new Proxy(characters, handler)
   expect(proxy[0]).toBe('Harry Potter')
   expect(proxy[-1]).toBe('Pigwidgeon')
@@ -84,7 +126,7 @@ test.skip('can be used to do some fancy stuff with arrays', () => {
 http://ws.kcd.im/?ws=ES6+and+Beyond&e=Proxies&em=
 */
 test('I submitted my elaboration and feedback', () => {
-  const submitted = false // change this when you've submitted!
+  const submitted = true // change this when you've submitted!
   expect(true).toBe(submitted)
 })
 ////////////////////////////////

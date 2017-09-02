@@ -1,25 +1,28 @@
 test('can get the iterator from an array', () => {
   const array = [1, 2, 3]
   // DON'T PEAK AT THE NEXT TESTS!
-  const iterator = '?' // how do you get the iterator?
+  const iterator = array[Symbol.iterator](); // how do you get the iterator?
   expect(typeof iterator.next === 'function').toBe(true)
 })
 
 test('can next() the iterator multiple times', () => {
   const string = 'hello' // <-- YES, this is iterable!
   const iterator = string[Symbol.iterator]()
-  expect(iterator.next()).toEqual(/* ENTER YOUR ANSWER HERE */)
-  expect(iterator.next()).toEqual(/* ENTER YOUR ANSWER HERE */)
-  expect(iterator.next()).toEqual(/* ENTER YOUR ANSWER HERE */)
-  expect(iterator.next()).toEqual(/* ENTER YOUR ANSWER HERE */)
-  expect(iterator.next()).toEqual(/* ENTER YOUR ANSWER HERE */)
-  expect(iterator.next()).toEqual(/* ENTER YOUR ANSWER HERE */)
-  expect(iterator.next()).toEqual(/* ENTER YOUR ANSWER HERE */)
+  expect(iterator.next()).toEqual({ done: false, value:'h'})
+  expect(iterator.next()).toEqual({ done: false, value:'e'})
+  expect(iterator.next()).toEqual({ done: false, value:'l'})
+  expect(iterator.next()).toEqual({ done: false, value:'l'})
+  expect(iterator.next()).toEqual({ done: false, value:'o'})
+  expect(iterator.next()).toThrow()
+  expect(iterator.next()).toThrow()
 })
 
 test('can iterate over an interable with for .. of', () => {
   const array = [1, 2, 3]
   let sum = 0
+  for(let num of array) {
+    sum += num;
+  }
   // write a for .. of loop
   // that gets the sum of
   // all items in the array
@@ -31,7 +34,7 @@ test('can use the ... operator on the iterator', () => {
   const set = new Set([1, 2, 2, 3])
   // use destructuring and the ... operator to create a
   // `rest` variable that only has the last two items.
-  const [rest] = set
+  const [,...rest] = set
   expect(rest).toEqual([2, 3])
 })
 
@@ -39,6 +42,19 @@ test('can create a custom iterator', () => {
   const randomRandomNumbersGenerator = {
     max: 20,
     min: 10,
+    [Symbol.iterator]() {
+      const {min, max} = this;
+      const ramdom = () => Math.ceil(Math.random() * (max - min) + min)
+      const length = ramdom();
+
+      let index = 0;
+      return {
+        next() {
+          index += 1;
+          return { done: index > (length-1), value: ramdom() }
+        }
+      }
+    }
     // add an iterator function here which will use this object's
     // min and max values to generate a random number of numbers
     // within the min and max which are each random within the min
@@ -63,6 +79,16 @@ test('can create a custom iterator with a generator', () => {
   const randomRandomNumbersGenerator = {
     max: 20,
     min: 10,
+    [Symbol.iterator]: function*() {
+      const {min, max} = this;
+      const ramdom = () => Math.ceil(Math.random() * (max - min) + min)
+      const length = ramdom();
+      let index = 0;
+
+      for (let index = 0; index < length; index++) {
+        yield ramdom();
+      }
+    }
     // rewrite the previous example as a generator function
   }
 
@@ -83,7 +109,7 @@ test('can create a custom iterator with a generator', () => {
 http://ws.kcd.im/?ws=ES6+and+Beyond&e=Iterators&em=
 */
 test('I submitted my elaboration and feedback', () => {
-  const submitted = false // change this when you've submitted!
+  const submitted = true // change this when you've submitted!
   expect(true).toBe(submitted)
 })
 ////////////////////////////////
@@ -92,8 +118,15 @@ test('I submitted my elaboration and feedback', () => {
 
 test.skip('add custom iterator to built-in types', () => {
   // How could you make this work using a custom iterator?
+
   const num = 5
   const result = [...num]
+
+  result[Symbol.iterator] = function*() {
+    return yield 1;
+  }
+
+  console.log(result);
   expect(result).toEqual([0, 1, 2, 3, 4])
 })
 

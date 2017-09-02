@@ -4,9 +4,9 @@ function basic() {
   // what is returned?
   let x = 100
   const y = 200
-  return {x: x, y: y}
+  return {x: x, y: y} // {x: 100, y: 200}
 }
-// log(basic())
+//log(basic())
 
 function immutable() {
   // what is returned?
@@ -15,17 +15,17 @@ function immutable() {
 
   object.a = 'q'
   array.splice(1, 1)
-  return {object: object, array: array}
+  return {object: object, array: array} // {object: {a: 'q'}, array: [1, 3, 4]}
 }
-// log(immutable())
+//log(immutable())
 
 function immutableReference() {
   // what is returned?
   const object = {a: 'b'}
   object = {a: 'q'}
-  return object
+  return object // Throw Exception
 }
-// log(immutableReference())
+//log(immutableReference())
 
 function ifBlock() {
   // what is returned?
@@ -33,9 +33,9 @@ function ifBlock() {
     const x = 34
     let y = 43
   }
-  return {x: x, y: y}
+  return {x: x, y: y} // Thorw Exception
 }
-// log(ifBlock())
+//log(ifBlock())
 
 function block() {
   // what is returned?
@@ -43,9 +43,9 @@ function block() {
     const x = 42
     let y = 24
   }
-  return {x: x, y: y}
+  return {x: x, y: y} // Throw Exception
 }
-// log(block())
+//log(block())
 
 function scoped() {
   // what is returned?
@@ -53,9 +53,9 @@ function scoped() {
   {
     const x = 123
   }
-  return x
+  return x // 33
 }
-// log(scoped())
+//log(scoped())
 
 function veryScoped() {
   // what is returned?
@@ -67,21 +67,21 @@ function veryScoped() {
     }
     // let x = 45 // if this weren't commented out, this file would fail parsing
   }
-  return x
+  return x // 23
 }
 // log(veryScoped())
 
 function temporalDeadZone() {
-  console.log(myVar)
-  console.log(myLet)
-  console.log(myConst)
-  
+  console.log(myVar) // undefined
+  console.log(myLet) // throw Exception
+  console.log(myConst) // throw Exception
+
   var myVar = 'var'
   let myLet = 'let'
   const myConst = 'const'
   return {myVar: myVar, myLet: myLet, myConst: myConst}
 }
-// log(temporalDeadZone())
+//log(temporalDeadZone())
 
 function semiPractical() {
   // what is returned from this function?
@@ -92,9 +92,10 @@ function semiPractical() {
       return myThings[i]
     })
   }
-  return callbacks.map(callback => callback())
+  return callbacks.map(callback => callback()) // i = 4
+  //[undefined,undefined,undefined,undefined]
 }
-// log(semiPractical())
+//log(semiPractical())
 
 
 
